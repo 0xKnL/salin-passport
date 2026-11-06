@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SALIN — Museum Visitor Passport</title>
+<style>
+*{box-sizing:border-box}
+:root{--paper:#f0eadd;--paper2:#f8f3e9;--ink:#25362f;--muted:#716d60;--line:#c6bdab;--gold:#b99c68}
+html{background:#e4decd}
+body{margin:0;font-family:Georgia,'Times New Roman',serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+button,input{font-family:inherit}
+#salin-passport{max-width:1120px;margin:0 auto;padding:14px;background:transparent}
+.passport{position:relative;overflow:hidden;padding:clamp(22px,5vw,59px);border:1px solid #b9aa90;background:var(--paper);box-shadow:0 20px 55px #28201817,0 0 0 5px #eee7d8 inset;background-image:radial-gradient(#71542a0b .8px,transparent 1px),linear-gradient(160deg,#faf7ee 0%,#f0e8d9 63%,#eae1cf 100%);background-size:7px 7px,auto}
+.passport::before{content:'';position:absolute;inset:11px;border:1px solid #b9ac9438;pointer-events:none}
+.corner{position:absolute;width:60px;height:60px;border-color:#a88f67;border-style:solid;opacity:.35;pointer-events:none}
+.corner.a{top:18px;left:18px;border-width:1px 0 0 1px}.corner.b{top:18px;right:18px;border-width:1px 1px 0 0}.corner.c{bottom:18px;left:18px;border-width:0 0 1px 1px}.corner.d{bottom:18px;right:18px;border-width:0 1px 1px 0}
+.mini-label{font:600 10px/1.4 Arial,sans-serif;letter-spacing:.20em;text-transform:uppercase;color:#697466}
+.passport-top{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #b2a78e;padding-bottom:16px}
+.brand{font-size:clamp(27px,5vw,40px);letter-spacing:.135em;font-weight:400;line-height:1}
+.brand small{display:block;margin-top:9px;font:500 9px Arial,sans-serif;letter-spacing:.25em;color:#58685a}
+.archive{text-align:right;font:500 10px/1.8 Arial,sans-serif;letter-spacing:.12em;color:#726955}
+.archive span{display:block}
+.intro{text-align:center;max-width:700px;margin:36px auto 31px}
+.intro .ornament{font-size:21px;color:#a7895a;letter-spacing:.22em;margin-bottom:5px}
+.intro h1{font-size:clamp(32px,6vw,56px);font-weight:400;line-height:1.1;letter-spacing:-.018em;margin:8px 0 12px}
+.intro p{font-size:clamp(13px,1.9vw,16px);line-height:1.6;color:#66685c;margin:0 auto;max-width:500px}
+.rule{display:flex;align-items:center;gap:18px;justify-content:center;margin:26px auto 18px;max-width:400px;color:#9b855d}
+.rule::before,.rule::after{content:'';height:1px;background:#bcae94;flex:1}
+.howto{text-align:center;font:500 11px/1.7 Arial,sans-serif;letter-spacing:.04em;color:#6c6f60;max-width:680px;margin:0 auto 27px}
+.progress-row{border-top:1px solid #cabfa8;border-bottom:1px solid #cabfa8;padding:16px 4px;display:flex;gap:25px;align-items:center;justify-content:space-between;margin-bottom:24px}
+.progress-label{font:600 10px/1.5 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.progress-label strong{font-family:Georgia,serif;font-weight:400;letter-spacing:0;font-size:19px;margin-left:8px;color:#456052}
+.progress-track{height:5px;background:#d4cab8;border-radius:5px;flex:1;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:#2c584e;transition:width .5s ease;border-radius:5px}
+.progress-status{font:11px Arial,sans-serif;color:#68675c;white-space:nowrap}
+.gallery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.gallery{--tone:#2d6053;position:relative;display:grid;grid-template-columns:minmax(0,1fr) 133px;gap:9px;min-height:218px;padding:21px 17px 18px 21px;border:1px solid #cbbda6;background:#fbf7ed99;transition:background .3s}
+.gallery::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tone);opacity:.85}
+.gallery[data-id="bintana"]{--tone:#8a5147}.gallery[data-id="salamin"]{--tone:#a08043}.gallery[data-id="pamana"]{--tone:#687960}
+.gallery.done{background:#fffaf0}.gallery.done::before{opacity:1}
+.gallery-no{font:600 10px Arial,sans-serif;letter-spacing:.14em;color:var(--tone);text-transform:uppercase;margin-bottom:13px}
+.gallery h2{font-size:clamp(23px,3vw,30px);font-weight:400;letter-spacing:.045em;margin:0 0 3px;line-height:1.05}
+.gallery .sub{font-size:12px;font-style:italic;color:#706e60;line-height:1.4;margin:0 0 17px}
+.collect-form{display:flex;align-items:stretch;gap:6px;max-width:250px}
+.collect-form input{min-width:0;width:130px;flex:1;border:1px solid #b9b3a3;background:#fffef9;padding:10px 10px;color:var(--ink);font:600 11px Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;border-radius:0;outline-offset:2px}
+.collect-form input::placeholder{font-weight:400;color:#928e81;letter-spacing:.06em;text-transform:none}
+.collect-form button{background:#263c34;color:#f3e9d6;border:1px solid #263c34;padding:8px 12px;font:600 10px Arial,sans-serif;letter-spacing:.06em;cursor:pointer;border-radius:0;white-space:nowrap;transition:background .2s}
+.collect-form button:hover,.collect-form button:focus-visible{background:#3f6758}
+.collect-form button:disabled{cursor:default;background:#ddd5c3;color:#596858;border-color:#c0b7a4}
+.feedback{font:11px/1.4 Arial,sans-serif;color:#8b3c33;min-height:16px;margin:9px 0 0}
+.gallery.done .feedback{color:#496c57}
+.stamp-space{display:flex;justify-content:center;align-items:center;min-width:0;position:relative}
+.stamp{width:126px;height:126px;border:2px dashed #c4bba9;border-radius:50%;color:#b8ae9f;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transform:rotate(-10deg);transition:transform .5s,color .3s,border-color .3s,background .3s;gap:2px;position:relative}
+.stamp::after{content:'';position:absolute;inset:5px;border:1px solid currentColor;border-radius:50%;opacity:.7}
+.stamp svg{width:45px;height:45px;display:block;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.stamp-name{font:700 10px Arial,sans-serif;letter-spacing:.12em}
+.stamp-date{font:600 8px Arial,sans-serif;letter-spacing:.15em}
+.stamp.waiting svg,.stamp.waiting .stamp-name,.stamp.waiting .stamp-date{opacity:.27}
+.gallery.done .stamp{color:var(--tone);border:3px double var(--tone);background:color-mix(in srgb,var(--tone) 7%,white);transform:rotate(-8deg) scale(1.03);box-shadow:0 0 0 2px #fbf7ed inset}
+.gallery.done .stamp::after{border-width:2px}
+.completion{display:none;margin:24px 0 7px;padding:28px 18px;text-align:center;background:#233a30;color:#faf4e5;border:1px solid #8d9074;position:relative}
+.completion.visible{display:block;animation:reveal .5s ease-out}
+.completion::before{content:'';position:absolute;inset:7px;border:1px solid #e4d4ae55;pointer-events:none}
+.completion .mini-label{color:#c3d5c2}.completion h3{font-weight:400;font-size:clamp(23px,4vw,36px);margin:8px 0 8px}.completion p{max-width:580px;font-size:13px;line-height:1.65;color:#e0e6d7;margin:0 auto}
+.passport-footer{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;border-top:1px solid #c5bba6;margin-top:24px;padding-top:17px}
+.utilities{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.utility{font:600 10px Arial,sans-serif;letter-spacing:.055em;color:#415a4c;text-decoration:underline;text-underline-offset:3px;background:none;border:0;padding:5px 0;cursor:pointer}
+.utility:hover{color:#7c513e}
+.footnote{font:10px/1.6 Arial,sans-serif;color:#7c766a;max-width:340px}
+.restore-panel{display:none;background:#e9e2d3;border:1px solid #cbbda7;padding:16px;margin-top:14px}
+.restore-panel.visible{display:block}
+.restore-panel label{display:block;font:600 11px Arial,sans-serif;letter-spacing:.04em;margin-bottom:8px}
+.restore-panel .collect-form{max-width:400px}
+.restore-panel .collect-form input{width:210px}
+.restore-panel p{font:11px/1.5 Arial,sans-serif;color:#716b5f;margin:8px 0 0}
+#utility-status{font:11px Arial,sans-serif;color:#46705a;min-height:14px;width:100%;text-align:right}
+@keyframes reveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){#salin-passport{padding:5px}.passport{padding:22px 17px}.gallery-grid{grid-template-columns:1fr;gap:12px}.gallery{grid-template-columns:minmax(0,1fr) 112px;min-height:182px;padding:17px 12px 13px 17px}.stamp{width:103px;height:103px}.stamp svg{width:37px;height:37px}.stamp-name{font-size:9px}.stamp-date{font-size:7px}.intro{margin:30px auto 20px}.archive{font-size:8px}.progress-row{gap:12px}.progress-status{display:none}}
+@media(max-width:360px){.gallery{grid-template-columns:minmax(0,1fr) 90px}.stamp{width:87px;height:87px}.stamp svg{width:30px;height:30px}.stamp-name{font-size:8px}.collect-form{flex-wrap:wrap}.collect-form input{flex-basis:100%}.collect-form button{flex:1}.passport-top{align-items:start}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* PASSPORT V2: VERIFIED STAMP COLLECTION */
+.save-strip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between;margin:-8px 0 24px;font:600 10px/1.5 Arial,sans-serif;letter-spacing:.055em;color:#53705f}
+.save-strip .save-left{display:flex;align-items:center;gap:7px}
+.save-bullet{display:inline-block;width:8px;height:8px;background:#6c977b;border-radius:50%;box-shadow:0 0 0 3px #6c977b20}
+.save-strip[data-state='limited']{color:#94553f}.save-strip[data-state='limited'] .save-bullet{background:#b78051;box-shadow:0 0 0 3px #b7805125}
+.save-strip[data-state='checking']{color:#797566}.save-strip[data-state='checking'] .save-bullet{background:#b3ac9c}
+.save-help{color:#4d675a;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:2px 0}
+.collection-note{margin:0 0 18px;text-align:center;color:#686d5f;font:11px/1.6 Arial,sans-serif}
+.collection-note b{color:#2c554a}
+.gallery.done .stamp{animation:stampArrive .5s cubic-bezier(.19,1,.22,1) both}
+@keyframes stampArrive{from{opacity:.5;transform:scale(1.3) rotate(-22deg)}to{opacity:1;transform:scale(1.03) rotate(-8deg)}}
+.gallery.done .collect-form{display:none}
+.gallery.done .feedback{margin-top:18px;font-weight:600}
+.gallery h2{word-break:normal}
+.completion-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:19px}
+.souvenir{border:1px solid #e3d4b7;background:#f4ebd9;color:#243a2f;font:700 10px Arial,sans-serif;letter-spacing:.13em;padding:12px 19px;cursor:pointer}
+.souvenir:hover{background:white}
+.passport-footer{align-items:center}
+.footnote{max-width:470px}
+.saving-notes{margin-top:12px;border-top:1px solid #c5bba6;padding-top:13px;color:#615f51}
+.saving-notes summary{font:600 11px Arial,sans-serif;letter-spacing:.03em;cursor:pointer;color:#3d5c4d}
+.saving-notes p{font:12px/1.65 Arial,sans-serif;max-width:770px;margin:9px 0 2px}
+#utility-status{max-width:420px}
+@media(max-width:760px){.save-strip{margin:-8px 0 21px;gap:8px}.collection-note{padding:0 12px}.completion-actions{margin-top:15px}.passport-footer{display:block}.utilities{margin-top:11px}#utility-status{text-align:left}}
+@media print{html,body{background:#fff!important}#salin-passport{max-width:100%;padding:0}.passport{box-shadow:none;border:0}.collect-form,.save-strip,.utilities,.saving-notes,.collection-note,.feedback,.completion-actions{display:none!important}.gallery-grid{grid-template-columns:1fr 1fr}.gallery{break-inside:avoid}.completion{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<div id="salin-passport">
+ <main class="passport" aria-label="SALIN visitor passport">
+  <span class="corner a"></span><span class="corner b"></span><span class="corner c"></span><span class="corner d"></span>
+  <header class="passport-top">
+   <div class="brand">SALIN<small>THE CULTURE WE CARRY</small></div>
+   <div class="archive"><span>VISITOR DOCUMENT / 002</span><span>THE CULTURAL TRAIL</span></div>
+  </header>
+  <section class="intro">
+   <div class="ornament" aria-hidden="true">✳</div>
+   <div class="mini-label">AN INVITATION TO EXPLORE</div>
+   <h1>Visitor's Passport</h1>
+   <p>Four galleries. Four perspectives. One continuing story of Filipino popular culture.</p>
+   <div class="rule" aria-hidden="true">✦</div>
+   <div class="howto">Discover each gallery’s <strong>hidden stamp word</strong>, then enter it here to mark your visit. Your collected stamps will be saved on this browser when storage is available.</div>
+  </section>
+  <div class="progress-row" aria-live="polite">
+   <div class="progress-label">COLLECTION <strong id="count">0 / 4</strong></div>
+   <div class="progress-track" role="progressbar" aria-label="Gallery stamps collected" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0" id="progress"><div class="progress-fill" id="fill"></div></div>
+   <div class="progress-status" id="progress-status">YOUR JOURNEY BEGINS</div>
+  </div>
+  <div class="save-strip" id="save-strip" data-state="checking"><div class="save-left"><span class="save-bullet" aria-hidden="true"></span><span id="save-status">CHECKING BROWSER SAVING…</span></div><button class="save-help" type="button" id="save-help" aria-label="Read saving instructions">HOW SAVING WORKS</button></div>
+  <p class="collection-note">A gallery stamp is released only after its <b>correct discovery word</b> is entered. No editable progress codes.</p>
+  <section class="gallery-grid" aria-label="Collect gallery stamps">
+   <article class="gallery" data-id="senyales" data-index="0">
+    <div><div class="gallery-no">01 / THE SIGNAL GALLERY</div><h2>SENYALES</h2><p class="sub">How We Connect</p>
+     <form class="collect-form" data-index="0"><input aria-label="Senyales discovery word" placeholder="Stamp word" spellcheck="false" autocomplete="off" maxlength="18"><button type="submit">COLLECT</button></form><p class="feedback" aria-live="polite"></p></div>
+    <div class="stamp-space"><div class="stamp waiting" aria-label="Senyales stamp not collected"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="30" r="3"/><path d="M16 23a12 12 0 0 1 16 0M10 17a21 21 0 0 1 28 0M21 34l3 8 3-8"/></svg><span class="stamp-name">SENYALES</span><span class="stamp-date">01 · SIGNAL</span></div></div>
+   </article>
+   <article class="gallery" data-id="bintana" data-index="1">
+    <div><div class="gallery-no">02 / THE EXCHANGE HALL</div><h2>BINTANA</h2><p class="sub">What We Exchange</p>
+     <form class="collect-form" data-index="1"><input aria-label="Bintana discovery word" placeholder="Stamp word" spellcheck="false" autocomplete="off" maxlength="18"><button type="submit">COLLECT</button></form><p class="feedback" aria-live="polite"></p></div>
+    <div class="stamp-space"><div class="stamp waiting" aria-label="Bintana stamp not collected"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 7h28v35H10zM24 7v35M10 23h28M15 14l5 4M34 27l-5 5"/></svg><span class="stamp-name">BINTANA</span><span class="stamp-date">02 · EXCHANGE</span></div></div>
+   </article>
+   <article class="gallery" data-id="salamin" data-index="2">
+    <div><div class="gallery-no">03 / THE REFLECTION GALLERY</div><h2>SALAMIN</h2><p class="sub">How We See Ourselves</p>
+     <form class="collect-form" data-index="2"><input aria-label="Salamin discovery word" placeholder="Stamp word" spellcheck="false" autocomplete="off" maxlength="18"><button type="submit">COLLECT</button></form><p class="feedback" aria-live="polite"></p></div>
+    <div class="stamp-space"><div class="stamp waiting" aria-label="Salamin stamp not collected"><svg viewBox="0 0 48 48" aria-hidden="true"><ellipse cx="24" cy="21" rx="13" ry="17"/><path d="M24 38v6M16 44h16M19 14c-4 3-5 8-5 12"/></svg><span class="stamp-name">SALAMIN</span><span class="stamp-date">03 · REFLECT</span></div></div>
+   </article>
+   <article class="gallery" data-id="pamana" data-index="3">
+    <div><div class="gallery-no">04 / THE GALLERY OF TOMORROW</div><h2>PAMANA</h2><p class="sub">What Will We Carry Forward?</p>
+     <form class="collect-form" data-index="3"><input aria-label="Pamana discovery word" placeholder="Stamp word" spellcheck="false" autocomplete="off" maxlength="18"><button type="submit">COLLECT</button></form><p class="feedback" aria-live="polite"></p></div>
+    <div class="stamp-space"><div class="stamp waiting" aria-label="Pamana stamp not collected"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 32h30M13 32a11 11 0 0 1 22 0M24 7v8M10 13l6 6M38 13l-6 6M6 25h7M35 25h7M16 38l8-4 8 4"/></svg><span class="stamp-name">PAMANA</span><span class="stamp-date">04 · LEGACY</span></div></div>
+   </article>
+  </section>
+  <section class="completion" id="completion" aria-live="polite"><div class="mini-label">THE EXHIBITION TRAIL IS COMPLETE</div><h3>What we carry becomes what we leave behind.</h3><p>You have journeyed through connection, exchange, reflection, and inheritance. The culture you encountered is now part of the story you carry forward.</p><div class="completion-actions"><button class="souvenir" type="button" id="souvenir">SAVE MY COMPLETED PASSPORT</button></div></section>
+  <footer class="passport-footer"><div class="footnote">SALIN — The Culture We Carry. Your stamp collection stays on this browser; no login, account, or personal data is required.</div><div class="utilities"><button class="utility" id="reset" type="button">START AGAIN</button></div><div id="utility-status" role="status" aria-live="polite"></div></footer>
+  <details class="saving-notes" id="saving-notes"><summary>About your saved stamps</summary><p>Stamps are stored locally in this browser where permitted. They do not transfer between devices or browser profiles. For the most reliable saving, open this passport as its own webpage in a separate tab rather than only inside a Google Sites embed. If your browser blocks storage, keep the tab open, or return to the gallery reveals to enter the discovered words again. No progress-code export is used.</p></details>
+ </main>
+</div>
+<script>
+(function(){
+  'use strict';
+  // SHA-256 fingerprints are used instead of the former editable SALIN-1010 backup format.
+  // This discourages casual editing; client-only stamps are NOT fraud-proof verification.
+  const ids=['senyales','bintana','salamin','pamana'];
+  const digests=['3a9d903faf71ba2af5fc4847de4a2100f7c2c6876ff1259a0252d70726b4fdb9', 'e8a67e49e37e5e2a42f0a5e6980ff36a6fb5719591cb4561d762c2e0b0a69b9b', '54d212fb164d27729fce6e8d2149379260a9a00d5f23bdcd990766da674a0ed8', 'dffb8228c83199eb94374bf431f1f22658df226b53b2af74df3eaa5e6002dd28'];
+  const pepper='SALIN_VISITOR_PASSPORT_v2:2026:2026-11';
+  const storageKey='salin_visitor_passport_v2';
+  const database='SALIN_VISITOR_PASSPORT';
+  const root=document.getElementById('salin-passport');
+  const cards=Array.from(root.querySelectorAll('.gallery'));
+  const $=(id)=>document.getElementById(id);
+  const proofs={};
+  let localOkay=false,idbOkay=false,sessionOkay=false,db=null;
+  let busy=false;
+  let initDone=false;
+  const permitted=(id,proof)=>ids.some((g,i)=>g===id&&digests[i]===proof);
+  function sanitize(value){
+    const safe={};
+    if(value&&value.version===2&&value.proofs&&typeof value.proofs==='object'){
+      ids.forEach(id=>{if(typeof value.proofs[id]==='string'&&permitted(id,value.proofs[id]))safe[id]=value.proofs[id]});
+    }
+    return safe;
+  }
+  function mergeFrom(obj){const valid=sanitize(obj);ids.forEach(id=>{if(valid[id])proofs[id]=valid[id]})}
+  function snapshot(){return {version:2,proofs:{...proofs}}}
+  function readStorage(type){try{const raw=window[type].getItem(storageKey);return raw?JSON.parse(raw):null}catch(e){return null}}
+  function writeStorage(type){try{window[type].setItem(storageKey,JSON.stringify(snapshot()));return window[type].getItem(storageKey)===JSON.stringify(snapshot())}catch(e){return false}}
+  function getDB(){return new Promise(resolve=>{
+    if(!('indexedDB' in window))return resolve(null);
+    let finished=false;
+    const complete=(v)=>{if(!finished){finished=true;resolve(v)}};
+    const timer=setTimeout(()=>complete(null),1400);
+    try{
+      const req=indexedDB.open(database,1);
+      req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('states'))req.result.createObjectStore('states')};
+      req.onsuccess=()=>{clearTimeout(timer);complete(req.result)};
+      req.onerror=()=>{clearTimeout(timer);complete(null)};
+      req.onblocked=()=>{clearTimeout(timer);complete(null)};
+    }catch(e){clearTimeout(timer);complete(null)}
+  })}
+  function dbRead(){return new Promise(resolve=>{
+    if(!db)return resolve(null);
+    try{const tx=db.transaction('states','readonly'),req=tx.objectStore('states').get(storageKey);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>resolve(null)}catch(e){resolve(null)}
+  })}
+  function dbWrite(){return new Promise(resolve=>{
+    if(!db)return resolve(false);
+    try{
+      const tx=db.transaction('states','readwrite');tx.objectStore('states').put(snapshot(),storageKey);
+      tx.oncomplete=()=>resolve(true);tx.onerror=()=>resolve(false);tx.onabort=()=>resolve(false)
+    }catch(e){resolve(false)}
+  })}
+  function message(s){$('utility-status').textContent=s}
+  function storageStatus(){
+    const label=$('save-status'),strip=$('save-strip');
+    if(localOkay||idbOkay){
+      strip.dataset.state='saved';label.textContent='BROWSER STORAGE AVAILABLE';
+    }else{
+      strip.dataset.state='limited';label.textContent='SESSION ONLY — STORAGE RESTRICTED';
+    }
+  }
+  function save(){
+    // Session storage is best-effort. LocalStorage and IndexedDB are mirrored independently.
+    sessionOkay=writeStorage('sessionStorage');
+    localOkay=writeStorage('localStorage');
+    if(db){dbWrite().then(ok=>{idbOkay=ok;storageStatus()})}
+    storageStatus();
+  }
+  function render(){
+    cards.forEach((card,i)=>{
+      const done=Boolean(proofs[ids[i]]===digests[i]);
+      const stamp=card.querySelector('.stamp'),form=card.querySelector('form'),input=form.querySelector('input'),button=form.querySelector('button'),feedback=card.querySelector('.feedback');
+      card.classList.toggle('done',done);
+      stamp.classList.toggle('waiting',!done);
+      stamp.setAttribute('aria-label',card.querySelector('h2').textContent+(done?' stamp collected':' stamp not yet collected'));
+      form.setAttribute('aria-hidden',done?'true':'false');
+      input.disabled=done||!initDone;button.disabled=done||!initDone;
+      button.textContent=done?'COLLECTED':'COLLECT';
+      if(done){input.value='';feedback.dataset.error='';feedback.textContent='✓ Discovery word accepted · stamp collected';}
+      else if(feedback.dataset.error!=='1'){feedback.textContent=''}
+    });
+    const total=ids.filter((id,i)=>proofs[id]===digests[i]).length;
+    $('count').textContent=total+' / 4';
+    $('fill').style.width=(total*25)+'%';
+    $('progress').setAttribute('aria-valuenow',String(total));
+    $('progress-status').textContent=total===4?'TRAIL COMPLETE':total===0?'YOUR JOURNEY BEGINS':'KEEP EXPLORING';
+    $('completion').classList.toggle('visible',total===4);
+  }
+  async function sha256(text){
+    if(!window.crypto||!window.crypto.subtle)throw Error('secure');
+    const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+    return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  root.querySelectorAll('.gallery form').forEach(form=>form.addEventListener('submit',async(e)=>{
+    e.preventDefault();if(busy||!initDone)return;
+    const i=Number(form.dataset.index),id=ids[i],input=form.querySelector('input'),feedback=cards[i].querySelector('.feedback');
+    if(proofs[id])return;
+    const word=input.value.trim().toLocaleUpperCase('en-US').replace(/[\s\-]+/g,'');
+    if(!word){feedback.dataset.error='1';feedback.textContent='Enter the discovery word found at the gallery exit.';return}
+    busy=true;form.querySelector('button').disabled=true;
+    try{
+      const proof=await sha256(pepper+'|'+id+'|'+word);
+      if(proof===digests[i]){
+        proofs[id]=proof;feedback.dataset.error='';render();save();
+        message('Stamp added to your visitor passport.');
+      }else{
+        feedback.dataset.error='1';feedback.textContent='That word does not match this gallery. Check its exit installation.';input.select();
+      }
+    }catch(err){feedback.dataset.error='1';feedback.textContent='Stamp validation needs a modern secure browser (HTTPS).'}
+    finally{busy=false;form.querySelector('button').disabled=Boolean(proofs[id])}
+  }));
+  $('reset').addEventListener('click',()=>{
+    if(!confirm('Start again? This clears your four collected stamps from this browser.'))return;
+    ids.forEach(id=>delete proofs[id]);
+    cards.forEach(card=>{card.querySelector('.feedback').dataset.error=''});
+    render();save();message('A new visitor passport has been started.');
+  });
+  $('save-help').addEventListener('click',()=>{
+    const notes=$('saving-notes');notes.open=!notes.open;if(notes.open)notes.scrollIntoView({block:'nearest',behavior:'smooth'});
+  });
+  $('souvenir').addEventListener('click',()=>{
+    if(ids.some((id,i)=>proofs[id]!==digests[i]))return;
+    const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=1040;
+    const c=canvas.getContext('2d');
+    c.fillStyle='#f1eadb';c.fillRect(0,0,1600,1040);
+    c.strokeStyle='#aa987e';c.lineWidth=3;c.strokeRect(38,38,1524,964);
+    c.strokeStyle='#c8baa3';c.lineWidth=1;c.strokeRect(55,55,1490,930);
+    c.textAlign='center';c.fillStyle='#294236';c.font='64px Georgia, serif';c.fillText('S A L I N',800,160);
+    c.font='22px Arial, sans-serif';c.fillText('THE CULTURE WE CARRY',800,205);
+    c.fillStyle='#3b392f';c.font='54px Georgia, serif';c.fillText('Visitor Passport — Completed',800,320);
+    c.font='24px Georgia, serif';c.fillText('Four galleries. Four perspectives. One continuing story.',800,370);
+    const stamps=[['SENYALES','#326357','CONNECTION'],['BINTANA','#854b43','EXCHANGE'],['SALAMIN','#937239','REFLECTION'],['PAMANA','#61725d','LEGACY']];
+    stamps.forEach((item,i)=>{
+      const x=230+i*380,y=590;c.save();c.translate(x,y);c.rotate(-.13);
+      c.strokeStyle=item[1];c.fillStyle=item[1];c.lineWidth=7;c.beginPath();c.arc(0,0,140,0,Math.PI*2);c.stroke();
+      c.lineWidth=2;c.beginPath();c.arc(0,0,126,0,Math.PI*2);c.stroke();
+      c.textAlign='center';c.font='bold 29px Arial, sans-serif';c.fillText(item[0],0,-12);c.font='18px Arial, sans-serif';c.fillText(item[2],0,22);
+      c.font='bold 16px Arial, sans-serif';c.fillText('SALIN · 2026',0,65);c.restore();
+    });
+    c.fillStyle='#3a493a';c.font='italic 32px Georgia, serif';c.fillText('What we carry becomes what we leave behind.',800,852);
+    c.font='18px Arial, sans-serif';c.fillStyle='#706955';c.fillText('A personal souvenir of the SALIN cultural exhibition · Not an official credential',800,935);
+    const link=document.createElement('a');link.download='SALIN_Completed_Visitor_Passport.png';link.href=canvas.toDataURL('image/png');document.body.appendChild(link);link.click();link.remove();
+    message('Your completed souvenir image is ready.');
+  });
+  async function init(){
+    // Load valid saved proofs from independent local storage layers.
+    mergeFrom(readStorage('sessionStorage'));
+    mergeFrom(readStorage('localStorage'));
+    localOkay=writeStorage('localStorage');sessionOkay=writeStorage('sessionStorage');
+    db=await getDB();
+    if(db){mergeFrom(await dbRead());idbOkay=await dbWrite()}
+    initDone=true;render();save();storageStatus();
+  }
+  render();init();
+})();
+</script>
+</body>
+</html>
